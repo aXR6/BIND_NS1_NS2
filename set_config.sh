@@ -3,25 +3,26 @@
 # Define o domínio de busca, máscara de rede, gateway e servidores DNS
 searchdomain="tsc.example.com"
 NETMASK="255.255.255.0"
-GATEWAY="192.168.1.1"
+GATEWAY="192.168.2.254"
 DNS1="192.168.2.200"
 DNS2="192.168.2.199"
-DNS3="192.168.2.1"
+DNS3="192.168.2.254"
 DNS4="8.8.8.8"
 
 # Determina a interface de rede principal
-PRIMARY_INTERFACE=$(ip route | grep default | sed -e "s/^.*dev.//" -e "s/.proto.*//")
+PRIMARY_INTERFACE="ens32"
 
 # Determina se o script está sendo executado no NS1 ou no NS2 através do hostname
 HOSTNAME=$(hostname)
 
 # Configura a URL do repositório e o diretório de destino conforme o servidor
-REPO_URL="https://github.com/aXR6/BIND_NS1_NS2.git"
 if [[ $HOSTNAME == "ns1" ]]; then
     IPADDR="192.168.2.200"
+    REPO_URL="https://github.com/aXR6/BIND_NS1_NS2.git"
     REPO_SUBDIR="Pasta_ETC-BIND_NS1"
 elif [[ $HOSTNAME == "ns2" ]]; then
     IPADDR="192.168.2.199"
+    REPO_URL="https://github.com/aXR6/BIND_NS1_NS2.git"
     REPO_SUBDIR="Pasta_ETC-BIND_NS2"
 else
     echo "Este script deve ser executado em NS1 ou NS2."
@@ -61,7 +62,7 @@ nameserver $DNS4
 search $searchdomain
 EOF
 
-# Clona o repositório e copia o conteúdo específico
+# Clona o repositório especificado
 TEMP_DIR=$(mktemp -d)
 git clone $REPO_URL $TEMP_DIR
 
@@ -75,4 +76,4 @@ cp -r $TEMP_DIR/$REPO_SUBDIR/* $BIND_DIR
 # Limpeza
 rm -rf $TEMP_DIR
 
-echo "Configuração de rede e BIND atualizados com sucesso."
+echo "Configuração de rede aplicada e arquivos BIND atualizados com sucesso."

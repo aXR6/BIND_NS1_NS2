@@ -9,7 +9,7 @@ options {
 
         recursion yes;
         allow-recursion { trusted; };
-        listen-on { 192.168.0.199; };      # ns2 private IP address
+        listen-on { 192.168.2.199; };      # ns2 private IP address
         allow-transfer { none; };          # disable zone transfers by default
 
         forwarders {
