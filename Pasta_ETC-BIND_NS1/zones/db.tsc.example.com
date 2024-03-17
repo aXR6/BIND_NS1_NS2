@@ -18,4 +18,4 @@ ns1.tsc.example.com.          IN      A       192.168.2.200
 ns2.tsc.example.com.          IN      A       192.168.2.199
 
 ; 192.168.2.0/24 - A records
-host1.tsc.example.com.        IN      A      192.168.2.11
+mtm.tsc.example.com.          IN      A       192.168.2.11

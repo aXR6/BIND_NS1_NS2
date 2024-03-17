@@ -3,10 +3,11 @@
 # Define o domínio de busca, máscara de rede, gateway e servidores DNS
 searchdomain="tsc.example.com"
 NETMASK="255.255.255.0"
-GATEWAY="192.168.2.254"
-DNS1="8.8.8.8"
-DNS2="8.8.4.4"
-NEW_DNS="192.168.2.254"
+GATEWAY="192.168.1.1"
+DNS1="192.168.2.200"
+DNS2="192.168.2.199"
+DNS3="192.168.2.1"
+DNS4="8.8.8.8"
 
 # Determina a interface de rede principal
 PRIMARY_INTERFACE=$(ip route | grep default | sed -e "s/^.*dev.//" -e "s/.proto.*//")
@@ -14,14 +15,13 @@ PRIMARY_INTERFACE=$(ip route | grep default | sed -e "s/^.*dev.//" -e "s/.proto.
 # Determina se o script está sendo executado no NS1 ou no NS2 através do hostname
 HOSTNAME=$(hostname)
 
-# Configura a URL do repositório e o endereço IP conforme o servidor
+# Configura a URL do repositório e o diretório de destino conforme o servidor
+REPO_URL="https://github.com/aXR6/BIND_NS1_NS2.git"
 if [[ $HOSTNAME == "ns1" ]]; then
     IPADDR="192.168.2.200"
-    REPO_URL="https://github.com/aXR6/BIND_NS1_NS2"
     REPO_SUBDIR="Pasta_ETC-BIND_NS1"
 elif [[ $HOSTNAME == "ns2" ]]; then
     IPADDR="192.168.2.199"
-    REPO_URL="https://github.com/aXR6/BIND_NS1_NS2"
     REPO_SUBDIR="Pasta_ETC-BIND_NS2"
 else
     echo "Este script deve ser executado em NS1 ou NS2."
@@ -36,8 +36,8 @@ cat <<EOF > /etc/network/interfaces
 source /etc/network/interfaces.d/*
 
 # The loopback network interface
-auto lo
-iface lo inet loopback
+#auto lo
+#iface lo inet loopback
 
 # The primary network interface
 auto $PRIMARY_INTERFACE
@@ -46,16 +46,22 @@ iface $PRIMARY_INTERFACE inet static
     netmask $NETMASK
     gateway $GATEWAY
     dns-search $searchdomain
-    dns-nameservers $DNS1 $DNS2
+    dns-nameservers $DNS1 $DNS2 $DNS3 $DNS4
 EOF
 
 # Reinicia a interface de rede para aplicar as configurações
 ifdown $PRIMARY_INTERFACE && ifup $PRIMARY_INTERFACE
 
-# Atualiza o arquivo /etc/resolv.conf com o novo servidor DNS
-echo "nameserver $NEW_DNS" > /etc/resolv.conf
+# Configura /etc/resolv.conf
+cat <<EOF > /etc/resolv.conf
+nameserver $DNS1
+nameserver $DNS2
+nameserver $DNS3
+nameserver $DNS4
+search $searchdomain
+EOF
 
-# Clona o repositório especificado
+# Clona o repositório e copia o conteúdo específico
 TEMP_DIR=$(mktemp -d)
 git clone $REPO_URL $TEMP_DIR
 
@@ -69,4 +75,4 @@ cp -r $TEMP_DIR/$REPO_SUBDIR/* $BIND_DIR
 # Limpeza
 rm -rf $TEMP_DIR
 
-echo "Configuração de rede e DNS aplicadas e arquivos BIND atualizados com sucesso."
+echo "Configuração de rede e BIND atualizados com sucesso."
