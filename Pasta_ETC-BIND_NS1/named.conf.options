@@ -1,8 +1,7 @@
 acl "trusted" {
-        192.168.0.200;    # ns1 - can be set to localhost
-        192.168.0.199;    # ns2
-        192.168.0.198;  # host1
-        192.168.0.197;  # host2
+        192.168.2.200;		# ns1 - can be set to localhost
+        192.168.2.199;		# ns2
+        192.168.2.11;		# host1
 };
 options {
 	directory "/var/cache/bind";

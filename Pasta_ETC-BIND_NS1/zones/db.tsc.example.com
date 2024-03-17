@@ -14,9 +14,8 @@ $TTL    604800
     IN      NS      ns2.tsc.example.com.
     
 ; name servers - A records
-ns1.tsc.example.com.          IN      A       192.168.0.200
-ns2.tsc.example.com.          IN      A       192.168.0.199
+ns1.tsc.example.com.          IN      A       192.168.2.200
+ns2.tsc.example.com.          IN      A       192.168.2.199
 
-; 192.168.0.0/24 - A records
-host1.tsc.example.com.        IN      A      192.168.0.198
-host2.tsc.example.com.        IN      A      192.168.0.197
+; 192.168.2.0/24 - A records
+host1.tsc.example.com.        IN      A      192.168.2.11

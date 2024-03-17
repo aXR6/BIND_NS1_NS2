@@ -9,11 +9,11 @@
 zone "tsc.example.com" {
     type slave;
     file "db.tsc.example.com";
-    masters { 192.168.0.200; };  # ns1 private IP
+    masters { 192.168.2.200; };  # ns1 private IP
 };
 
 zone "168.192.in-addr.arpa" {
     type slave;
     file "db.192.168";
-    masters { 192.168.0.200; };  # ns1 private IP
+    masters { 192.168.2.200; };  # ns1 private IP
 };
